@@ -1,0 +1,20 @@
+name: Automated Sync
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"
+
+jobs:
+  sync:
+    env:
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      RPC_ENDPOINT_ETHEREUM_KEY: ${{ secrets.RPC_ENDPOINT_ETHEREUM_KEY }}
+      RPC_ENDPOINT_POLYGON_KEY: ${{ secrets.RPC_ENDPOINT_POLYGON_KEY }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: yarn
+      - run: npx hardhat run scripts/mirror.ts
